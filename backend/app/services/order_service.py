@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from app.models.order import Order, OrderItem, OrderStatus, OrderPriority
+from app.models.order import Order, OrderItem, OrderStatus
 from app.models.product import Product
 from app.models.warehouse import StockEntry
 from app.schemas.order import OrderCreate, OrderUpdate

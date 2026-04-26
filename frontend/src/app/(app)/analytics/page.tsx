@@ -9,9 +9,21 @@ import {
 } from "recharts";
 import { analyticsApi } from "@/lib/api";
 import { Header } from "@/components/layout/Header";
-import { formatCurrency, formatNumber } from "@/lib/utils";
-import { TrendingUp, Brain, Cpu, Zap } from "lucide-react";
-import type { SupplierRank, ForecastResult } from "@/types";
+import { formatCurrency } from "@/lib/utils";
+import { TrendingUp, Brain, Cpu } from "lucide-react";
+import type { SupplierRank } from "@/types";
+
+type ForecastResult = {
+  product_id: number;
+  periods_ahead: number;
+  forecast: number[];
+  trend: number;
+  rmse: number;
+  mape: number;
+  confidence_lower: number[];
+  confidence_upper: number[];
+  error?: string;
+};
 
 const THEME = { grid: "#334155", text: "#94a3b8", blue: "#3b82f6", green: "#10b981", yellow: "#f59e0b", red: "#ef4444" };
 
@@ -24,7 +36,7 @@ export default function AnalyticsPage() {
   const [productId, setProductId] = useState(1);
   const [periods, setPeriods] = useState(30);
 
-  const { data: forecast, isLoading: fLoading } = useQuery<ForecastResult>({
+  const { data: forecast, isLoading: fLoading } = useQuery<ForecastResult | undefined>({
     queryKey: ["forecast", productId, periods],
     queryFn: () => analyticsApi.forecast(productId, periods).then((r) => r.data),
   });
@@ -91,7 +103,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          {forecast && !("error" in forecast) && (
+          {forecast && !forecast.error && (
             <div className="flex gap-4 mb-4">
               <div className="flex items-center gap-2 text-xs"><span className="text-slate-400">RMSE:</span><span className="text-white font-mono">{forecast.rmse}</span></div>
               <div className="flex items-center gap-2 text-xs"><span className="text-slate-400">MAPE:</span><span className="text-white font-mono">{forecast.mape}%</span></div>
@@ -101,7 +113,7 @@ export default function AnalyticsPage() {
 
           {fLoading ? (
             <div className="h-64 flex items-center justify-center text-slate-500">Loading forecast…</div>
-          ) : "error" in (forecast ?? {}) ? (
+          ) : forecast?.error ? (
             <div className="h-64 flex items-center justify-center text-yellow-400">Insufficient history (need ≥14 days)</div>
           ) : (
             <ResponsiveContainer width="100%" height={260}>

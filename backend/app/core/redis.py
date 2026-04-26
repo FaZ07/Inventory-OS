@@ -1,7 +1,6 @@
 import json
 import redis.asyncio as aioredis
-from functools import wraps
-from typing import Any, Callable
+from typing import Any
 from app.core.config import settings
 
 _redis_pool: aioredis.Redis | None = None

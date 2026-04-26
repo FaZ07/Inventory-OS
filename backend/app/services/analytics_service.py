@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_, text
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import List, Dict, Any
 
 from app.models.product import Product
@@ -8,11 +8,9 @@ from app.models.warehouse import Warehouse, StockEntry
 from app.models.order import Order, OrderItem, OrderStatus, OrderType
 from app.models.supplier import Supplier
 from app.models.shipment import Shipment, ShipmentStatus
-from app.algorithms.forecasting import holt_winters_forecast, rank_suppliers, safety_stock, economic_order_quantity
-from app.algorithms.heap import RestockHeap, OrderHeap, ShipmentRiskHeap
+from app.algorithms.forecasting import holt_winters_forecast, rank_suppliers
+from app.algorithms.heap import RestockHeap
 from app.core.redis import cache_get, cache_set
-from app.core.config import settings
-import time
 
 
 class AnalyticsService:

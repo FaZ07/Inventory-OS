@@ -1,16 +1,13 @@
-import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, update, and_
-from sqlalchemy.orm import selectinload
-from fastapi import HTTPException, status
+from sqlalchemy import select, func, update
+from fastapi import HTTPException
 from typing import Optional, List
 
 from app.models.product import Product, ProductStatus
 from app.models.warehouse import StockEntry
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.algorithms.trie import get_trie, rebuild_trie
-from app.core.redis import cache_get, cache_set, cache_delete, cache_delete_pattern
-from app.core.config import settings
+from app.core.redis import cache_get, cache_set, cache_delete_pattern
 
 
 class ProductService:

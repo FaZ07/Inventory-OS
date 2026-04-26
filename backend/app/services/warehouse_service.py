@@ -1,13 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
 from fastapi import HTTPException
-from typing import List, Optional
+from typing import List
 
 from app.models.warehouse import Warehouse, StockEntry, WarehouseStatus
 from app.models.product import Product
 from app.schemas.warehouse import WarehouseCreate, WarehouseUpdate, StockUpdate
 from app.algorithms.graph import WarehouseGraph
-from app.core.redis import cache_get, cache_set, cache_delete_pattern
+from app.core.redis import cache_get, cache_delete_pattern
 
 
 class WarehouseService:

@@ -5,7 +5,6 @@ Run: python -m app.scripts.seed
 import asyncio
 import random
 from datetime import datetime, timedelta, timezone
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import AsyncSessionLocal
 from app.core.security import hash_password
 from app.models import User, UserRole, Supplier, Warehouse, Product, Order, OrderItem, Shipment, ShipmentEvent

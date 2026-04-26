@@ -8,7 +8,7 @@ from app.core.database import get_db
 from app.core.deps import get_current_user, require_manager
 from app.models.shipment import Shipment, ShipmentEvent, ShipmentStatus
 from app.schemas.shipment import ShipmentCreate, ShipmentUpdate, ShipmentResponse
-from app.schemas.common import PaginatedResponse, MessageResponse
+from app.schemas.common import PaginatedResponse
 from app.algorithms.heap import ShipmentRiskHeap
 from app.core.redis import cache_delete_pattern
 import time
