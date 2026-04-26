@@ -1,0 +1,76 @@
+name: InventoryOS CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: inventoryos
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: inventoryos_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: cd backend && pip install -r requirements.txt
+
+      - name: Run algorithm unit tests (no DB)
+        run: cd backend && pytest tests/test_algorithms.py -v --tb=short
+
+      - name: Run full test suite
+        env:
+          DATABASE_URL: postgresql+asyncpg://inventoryos:testpass@localhost:5432/inventoryos_test
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key-for-ci-minimum-32-chars
+        run: cd backend && pytest tests/ -v --cov=app --cov-report=xml
+
+      - name: Lint
+        run: cd backend && pip install ruff && ruff check app/
+
+  frontend-lint:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: cd frontend && npm ci
+      - run: cd frontend && npm run type-check
+      - run: cd frontend && npm run lint
+
+  docker-build:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build --no-cache
