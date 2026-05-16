@@ -124,7 +124,7 @@ export default function InventoryPage() {
               <span className="text-xs text-slate-500">— Trie-backed O(k)</span>
             </div>
             {(searchResults ?? []).length === 0 && !searching ? (
-              <p className="text-slate-500 text-sm">No results for "{searchQ}"</p>
+              <p className="text-slate-500 text-sm">No results for &quot;{searchQ}&quot;</p>
             ) : (
               <div className="space-y-2">
                 {(searchResults ?? []).map((r) => (
@@ -153,7 +153,7 @@ export default function InventoryPage() {
               columns={columns as never}
               data={products as never}
               loading={isLoading}
-              rowKey={(p) => (p as Product).id}
+              rowKey={(p) => (p as unknown as Product).id}
               emptyMessage="No products found"
             />
             {/* Pagination */}

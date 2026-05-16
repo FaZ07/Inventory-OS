@@ -219,6 +219,16 @@ export interface RestockItem {
   urgency_score: number;
 }
 
+export interface RouteResult {
+  path: number[];
+  total_cost: number;
+  total_distance_km: number;
+  estimated_days: number;
+  hops: number;
+  path_names: string[];
+  network_bottlenecks: number[];
+}
+
 export interface SupplierRank {
   supplier_id: number;
   name: string;

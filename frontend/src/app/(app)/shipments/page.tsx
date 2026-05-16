@@ -113,7 +113,7 @@ export default function ShipmentsPage() {
               columns={columns as never}
               data={(data?.items ?? []) as never}
               loading={isLoading}
-              rowKey={(s) => (s as Shipment).id}
+              rowKey={(s) => (s as unknown as Shipment).id}
               emptyMessage="No shipments found"
             />
           </div>

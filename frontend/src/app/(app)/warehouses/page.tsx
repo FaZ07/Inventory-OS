@@ -8,12 +8,13 @@ import { StatusBadge } from "@/components/ui/Badge";
 import { formatNumber, formatPercent } from "@/lib/utils";
 import { Warehouse, MapPin, Navigation, Zap, Plus } from "lucide-react";
 import toast from "react-hot-toast";
+import type { RouteResult } from "@/types";
 
 export default function WarehousesPage() {
   const [selectedWh, setSelectedWh] = useState<number | null>(null);
   const [origin, setOrigin] = useState("");
   const [dest, setDest] = useState("");
-  const [routeResult, setRouteResult] = useState<unknown>(null);
+  const [routeResult, setRouteResult] = useState<RouteResult | null>(null);
 
   const { data: warehouses = [], isLoading } = useQuery({
     queryKey: ["warehouses"],
@@ -106,9 +107,9 @@ export default function WarehousesPage() {
             <Navigation className="w-5 h-5 text-blue-400" />
             <div>
               <h3 className="font-semibold text-white">Route Optimizer</h3>
-              <p className="text-xs text-slate-500">Dijkstra's shortest path + bottleneck detection</p>
+              <p className="text-xs text-slate-500">Dijkstra&apos;s shortest path + bottleneck detection</p>
             </div>
-            <span className="badge text-blue-400 bg-blue-400/10 border border-blue-400/20 text-xs">Dijkstra's O((V+E)logV)</span>
+            <span className="badge text-blue-400 bg-blue-400/10 border border-blue-400/20 text-xs">Dijkstra&apos;s O((V+E)logV)</span>
           </div>
           <div className="flex items-end gap-4">
             <div className="flex-1">
@@ -140,22 +141,22 @@ export default function WarehousesPage() {
             <div className="mt-4 p-4 bg-surface rounded-xl border border-brand-500/20 animate-slide-up">
               <h4 className="text-sm font-semibold text-brand-400 mb-3">Optimal Route Found</h4>
               <div className="grid grid-cols-4 gap-4 mb-4">
-                <div><p className="text-xs text-slate-500">Total Cost</p><p className="text-white font-bold">${(routeResult as { total_cost: number }).total_cost.toFixed(2)}</p></div>
-                <div><p className="text-xs text-slate-500">Distance</p><p className="text-white font-bold">{(routeResult as { total_distance_km: number }).total_distance_km} km</p></div>
-                <div><p className="text-xs text-slate-500">Est. Days</p><p className="text-white font-bold">{(routeResult as { estimated_days: number }).estimated_days}d</p></div>
-                <div><p className="text-xs text-slate-500">Hops</p><p className="text-white font-bold">{(routeResult as { hops: number }).hops}</p></div>
+                <div><p className="text-xs text-slate-500">Total Cost</p><p className="text-white font-bold">${routeResult.total_cost.toFixed(2)}</p></div>
+                <div><p className="text-xs text-slate-500">Distance</p><p className="text-white font-bold">{routeResult.total_distance_km} km</p></div>
+                <div><p className="text-xs text-slate-500">Est. Days</p><p className="text-white font-bold">{routeResult.estimated_days}d</p></div>
+                <div><p className="text-xs text-slate-500">Hops</p><p className="text-white font-bold">{routeResult.hops}</p></div>
               </div>
               <div className="flex items-center gap-2 flex-wrap">
-                {((routeResult as { path_names?: string[] }).path_names ?? []).map((name: string, i: number, arr: string[]) => (
+                {(routeResult.path_names ?? []).map((name: string, i: number, arr: string[]) => (
                   <span key={i} className="flex items-center gap-2">
                     <span className="px-2 py-1 bg-brand-600/20 text-brand-400 rounded text-xs border border-brand-600/30">{name}</span>
                     {i < arr.length - 1 && <span className="text-slate-500">→</span>}
                   </span>
                 ))}
               </div>
-              {((routeResult as { network_bottlenecks?: number[] }).network_bottlenecks ?? []).length > 0 && (
+              {(routeResult.network_bottlenecks ?? []).length > 0 && (
                 <p className="mt-3 text-xs text-yellow-400">
-                  ⚠ Bottleneck nodes detected: {(routeResult as { network_bottlenecks: number[] }).network_bottlenecks.join(", ")}
+                  ⚠ Bottleneck nodes detected: {routeResult.network_bottlenecks.join(", ")}
                 </p>
               )}
             </div>

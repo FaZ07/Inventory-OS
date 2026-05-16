@@ -108,7 +108,7 @@ export default function SuppliersPage() {
             columns={columns as never}
             data={(data?.items ?? []) as never}
             loading={isLoading}
-            rowKey={(s) => (s as Supplier).id}
+            rowKey={(s) => (s as unknown as Supplier).id}
             emptyMessage="No suppliers found"
           />
         </div>

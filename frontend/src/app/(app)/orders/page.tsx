@@ -132,7 +132,7 @@ export default function OrdersPage() {
               columns={columns as never}
               data={(data?.items ?? []) as never}
               loading={isLoading}
-              rowKey={(o) => (o as Order).id}
+              rowKey={(o) => (o as unknown as Order).id}
               emptyMessage="No orders found"
             />
             {data && data.total_pages > 1 && (
