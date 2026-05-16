@@ -337,7 +337,9 @@ def _merge(left: list, right: list, key, reverse: bool) -> list:
     while i < len(left) and j < len(right):
         lv, rv = key(left[i]), key(right[j])
         if (lv >= rv) if reverse else (lv <= rv):
-            result.append(left[i]); i += 1
+            result.append(left[i])
+            i += 1
         else:
-            result.append(right[j]); j += 1
+            result.append(right[j])
+            j += 1
     return result + left[i:] + right[j:]

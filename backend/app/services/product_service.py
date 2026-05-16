@@ -34,7 +34,7 @@ class ProductService:
         if cached:
             return cached
 
-        result = await db.execute(select(Product).where(Product.id == product_id, Product.is_active == True))
+        result = await db.execute(select(Product).where(Product.id == product_id, Product.is_active))
         product = result.scalar_one_or_none()
         if not product:
             raise HTTPException(status_code=404, detail="Product not found")
@@ -55,8 +55,8 @@ class ProductService:
         if cached:
             return cached["items"], cached["total"]
 
-        stmt = select(Product).where(Product.is_active == True)
-        count_stmt = select(func.count(Product.id)).where(Product.is_active == True)
+        stmt = select(Product).where(Product.is_active)
+        count_stmt = select(func.count(Product.id)).where(Product.is_active)
 
         if category:
             stmt = stmt.where(Product.category == category)
@@ -105,7 +105,7 @@ class ProductService:
     async def rebuild_search_index(db: AsyncSession):
         result = await db.execute(
             select(Product.id, Product.sku, Product.name, Product.turnover_rate)
-            .where(Product.is_active == True)
+            .where(Product.is_active)
         )
         products = [{"id": r[0], "sku": r[1], "name": r[2], "turnover_rate": r[3]} for r in result]
         rebuild_trie(products)

@@ -26,13 +26,13 @@ class AnalyticsService:
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         # Total products
-        total_products = (await db.execute(select(func.count(Product.id)).where(Product.is_active == True))).scalar_one()
+        total_products = (await db.execute(select(func.count(Product.id)).where(Product.is_active))).scalar_one()
 
         # Total warehouses
-        total_warehouses = (await db.execute(select(func.count(Warehouse.id)).where(Warehouse.is_active == True))).scalar_one()
+        total_warehouses = (await db.execute(select(func.count(Warehouse.id)).where(Warehouse.is_active))).scalar_one()
 
         # Total suppliers
-        total_suppliers = (await db.execute(select(func.count(Supplier.id)).where(Supplier.is_active == True))).scalar_one()
+        total_suppliers = (await db.execute(select(func.count(Supplier.id)).where(Supplier.is_active))).scalar_one()
 
         # Monthly revenue (delivered sales orders)
         revenue_result = await db.execute(
@@ -70,7 +70,7 @@ class AnalyticsService:
 
         # Avg warehouse utilization
         util_result = await db.execute(
-            select(func.avg(Warehouse.current_utilization_pct)).where(Warehouse.is_active == True)
+            select(func.avg(Warehouse.current_utilization_pct)).where(Warehouse.is_active)
         )
         avg_utilization = round(float(util_result.scalar_one() or 0), 1)
 
@@ -118,7 +118,7 @@ class AnalyticsService:
                 Warehouse.id, Warehouse.name, Warehouse.city, Warehouse.country,
                 Warehouse.capacity_sqft, Warehouse.current_utilization_pct,
                 Warehouse.status
-            ).where(Warehouse.is_active == True)
+            ).where(Warehouse.is_active)
         )
         return [
             {
@@ -171,7 +171,7 @@ class AnalyticsService:
             )
             .join(Product, Product.id == StockEntry.product_id)
             .where(StockEntry.quantity <= StockEntry.reorder_point)
-            .where(Product.is_active == True)
+            .where(Product.is_active)
         )
         heap = RestockHeap()
         for row in result:
@@ -198,7 +198,7 @@ class AnalyticsService:
                 Supplier.id, Supplier.name,
                 Supplier.on_time_delivery_rate, Supplier.quality_score,
                 Supplier.price_competitiveness, Supplier.lead_time_days,
-            ).where(Supplier.is_active == True)
+            ).where(Supplier.is_active)
         )
         suppliers = [
             {

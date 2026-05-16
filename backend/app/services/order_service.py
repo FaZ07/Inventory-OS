@@ -41,7 +41,7 @@ class OrderService:
         subtotal = 0.0
         for item_data in data.items:
             product = (await db.execute(
-                select(Product).where(Product.id == item_data.product_id, Product.is_active == True)
+                select(Product).where(Product.id == item_data.product_id, Product.is_active)
             )).scalar_one_or_none()
             if not product:
                 raise HTTPException(status_code=404, detail=f"Product {item_data.product_id} not found")

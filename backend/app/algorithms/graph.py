@@ -171,7 +171,8 @@ class WarehouseGraph:
         visited, queue = {source}, [source]
         head = 0
         while head < len(queue):
-            node = queue[head]; head += 1
+            node = queue[head]
+            head += 1
             for edge in self._adj.get(node, []):
                 if edge.to not in visited:
                     visited.add(edge.to)

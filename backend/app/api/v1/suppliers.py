@@ -38,8 +38,8 @@ async def list_suppliers(
     db: AsyncSession = Depends(get_db),
     _=Depends(get_current_user),
 ):
-    stmt = select(Supplier).where(Supplier.is_active == True)
-    count_stmt = select(func.count(Supplier.id)).where(Supplier.is_active == True)
+    stmt = select(Supplier).where(Supplier.is_active)
+    count_stmt = select(func.count(Supplier.id)).where(Supplier.is_active)
     if status:
         stmt = stmt.where(Supplier.status == status)
         count_stmt = count_stmt.where(Supplier.status == status)
@@ -65,7 +65,7 @@ async def supplier_rankings(db: AsyncSession = Depends(get_db), _=Depends(get_cu
 @router.get("/{supplier_id}", response_model=SupplierResponse)
 async def get_supplier(supplier_id: int, db: AsyncSession = Depends(get_db), _=Depends(get_current_user)):
     from fastapi import HTTPException
-    result = await db.execute(select(Supplier).where(Supplier.id == supplier_id, Supplier.is_active == True))
+    result = await db.execute(select(Supplier).where(Supplier.id == supplier_id, Supplier.is_active))
     supplier = result.scalar_one_or_none()
     if not supplier:
         raise HTTPException(status_code=404, detail="Supplier not found")

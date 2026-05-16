@@ -53,7 +53,7 @@ class AuthService:
             raise HTTPException(status_code=401, detail="Invalid refresh token")
 
         user_id = int(payload["sub"])
-        result = await db.execute(select(User).where(User.id == user_id, User.is_active == True))
+        result = await db.execute(select(User).where(User.id == user_id, User.is_active))
         user = result.scalar_one_or_none()
         if not user:
             raise HTTPException(status_code=401, detail="User not found")

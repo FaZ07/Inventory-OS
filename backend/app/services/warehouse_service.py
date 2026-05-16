@@ -27,7 +27,7 @@ class WarehouseService:
 
     @staticmethod
     async def get_by_id(db: AsyncSession, wh_id: int) -> Warehouse:
-        result = await db.execute(select(Warehouse).where(Warehouse.id == wh_id, Warehouse.is_active == True))
+        result = await db.execute(select(Warehouse).where(Warehouse.id == wh_id, Warehouse.is_active))
         wh = result.scalar_one_or_none()
         if not wh:
             raise HTTPException(status_code=404, detail="Warehouse not found")
@@ -38,7 +38,7 @@ class WarehouseService:
         cached = await cache_get("warehouses:all")
         if cached:
             return cached
-        result = await db.execute(select(Warehouse).where(Warehouse.is_active == True).order_by(Warehouse.name))
+        result = await db.execute(select(Warehouse).where(Warehouse.is_active).order_by(Warehouse.name))
         whs = list(result.scalars().all())
         return whs
 
@@ -111,7 +111,7 @@ class WarehouseService:
         """Build warehouse graph and run Dijkstra for optimal shipping route."""
         result = await db.execute(
             select(Warehouse.id, Warehouse.latitude, Warehouse.longitude, Warehouse.name)
-            .where(Warehouse.is_active == True)
+            .where(Warehouse.is_active)
         )
         warehouses = [{"id": r[0], "latitude": r[1], "longitude": r[2], "name": r[3]} for r in result]
 
