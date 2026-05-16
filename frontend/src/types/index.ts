@@ -200,6 +200,14 @@ export interface ForecastResult {
   confidence_upper: number[];
 }
 
+export interface ProductSearchResult {
+  product_id: number;
+  sku: string;
+  name: string;
+  score: number;
+  edit_distance?: number;
+}
+
 export interface RestockItem {
   product_id: number;
   sku: string;
